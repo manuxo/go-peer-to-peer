@@ -47,7 +47,6 @@ func SendMessageNoReply(toHost string, message string) {
 	fmt.Fprintln(conn, message)
 }
 
-// RemoveHost delete an element from a slice string[] by index and runs in constant time.
 func RemoveHost(index int, hosts []string) []string {
 	n := len(hosts)
 	hosts[index] = hosts[n-1]
@@ -55,7 +54,6 @@ func RemoveHost(index int, hosts []string) []string {
 	return hosts[:n-1]
 }
 
-// RemoveHostByValue delete an element from a slice string[] by value
 func RemoveHostByValue(ip string, hosts []string) []string {
 	for index, host := range hosts {
 		if host == ip {
