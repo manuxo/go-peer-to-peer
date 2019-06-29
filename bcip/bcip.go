@@ -11,8 +11,7 @@ import (
 )
 
 var HOSTS []string
-var LOCALHOST string = "25.16.224.61:5000"
-var PUBLICHOST string
+var LOCALHOST string
 
 type MessageType int32
 
@@ -113,7 +112,7 @@ func RemoveHostByValue(ip string, hosts []string) []string {
 
 func Broadcast(newHost string) {
 	for _, host := range HOSTS {
-		data := append(HOSTS, newHost, PUBLICHOST)
+		data := append(HOSTS, newHost, LOCALHOST)
 		data = RemoveHostByValue(host, data)
 		requestBroadcast := RequestBody{
 			Message:     strings.Join(data, ","),
@@ -135,7 +134,7 @@ func IpServer(end chan<- int) {
 		_ = json.Unmarshal([]byte(data), &request)
 		if request.MessageType == NEWHOST {
 			fmt.Printf("NEWHOST: %s\n", request.Message)
-			message := strings.Join(append(HOSTS, PUBLICHOST), ",")
+			message := strings.Join(append(HOSTS, LOCALHOST), ",")
 			requestClient := RequestBody{
 				Message:     message,
 				MessageType: ADDHOST,
@@ -157,13 +156,13 @@ func main() {
 	var dest string
 	end := make(chan int)
 	fmt.Print("Ingresa tu host: ")
-	fmt.Scanf("%s\n", &PUBLICHOST)
+	fmt.Scanf("%s\n", &LOCALHOST)
 	fmt.Print("Ingresa host destino(Vacío para ser el primer nodo): ")
 	fmt.Scanf("%s\n", &dest)
 	go IpServer(end)
 	if dest != "" {
 		requestBody := &RequestBody{
-			Message:     PUBLICHOST,
+			Message:     LOCALHOST,
 			MessageType: NEWHOST,
 		}
 		requestMessage, _ := json.Marshal(requestBody)
