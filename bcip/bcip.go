@@ -2,12 +2,10 @@ package main
 
 import (
 	"bufio"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"net"
 	"strings"
-	"time"
 )
 
 var HOSTS []string
@@ -24,55 +22,6 @@ const (
 type RequestBody struct {
 	Message     string
 	MessageType MessageType
-}
-
-type MedicalRecord struct {
-	Name       string
-	Year       string
-	Hospital   string
-	Doctor     string
-	Diagnostic string
-	Medication string
-	Procedure  string
-}
-
-type Block struct {
-	Index        int
-	Timestamp    time.Time
-	Data         MedicalRecord
-	PreviousHash string
-	Hash         string
-}
-
-func (block *Block) CalculateHash() string {
-	src, _ := json.Marshal(block)
-	return base64.StdEncoding.EncodeToString(src)
-}
-
-type BlockChain struct {
-	Chain []Block
-}
-
-func (blockChain *BlockChain) CreateGenesisBlock() Block {
-	block := Block{
-		Index:        0,
-		Timestamp:    time.Now(),
-		Data:         MedicalRecord{},
-		PreviousHash: "0",
-	}
-	block.Hash = block.CalculateHash()
-	return block
-}
-
-func (blockChain *BlockChain) GetLatesBlock() Block {
-	n := len(blockChain.Chain)
-	return blockChain.Chain[n-1]
-}
-
-func (blockChain *BlockChain) AddBlock(block Block) {
-	block.PreviousHash = blockChain.GetLatesBlock().Hash
-	block.Hash = block.CalculateHash()
-	blockChain.Chain = append(blockChain.Chain, block)
 }
 
 func GetMessage(conn net.Conn) string {
